@@ -1,4 +1,8 @@
-from flask import Blueprint
+# request para peticion y jsonify para respuestas
+from flask import Blueprint,request, jsonify
+
+# importar las funciones del archivo modelEstudiante de la carpeta Models
+from Models.modelEstudiante import *
 
 #Primer objeto controlador con constructor "name", sirve para aplicar y utilizar las rutas
 controladorAlumnoBP = Blueprint('controladorAlumno', __name__)
@@ -11,20 +15,43 @@ def inicio():
 #Ruta para insert
 @controladorAlumnoBP.route('/guardarAlumno', methods=['POST'])
 def guardar():
-    return 'Se guardó el alumno'
+    nombreReq = request.form.get('txtNombre').strip()
+    carreraReq = request.form.get('txtCarrera').strip()
+
+    try:
+        insertEstudiante(nombreReq,carreraReq)
+        return jsonify({"Completado":"estudiante guardado"}),200
+    except Exception as e:
+        return jsonify({"Error": str(e)}),500
+
 
 #Ruta para consulta
 @controladorAlumnoBP.route('/consultatodo')
 def consultatodo():
-    return 'Se consulto todo'
-
+    try:
+        datos = selectAll()
+        return jsonify({"Consultado":datos}),200
+    except Exception as e:
+            return jsonify({"Error": str(e)}),500
 #Ruta para actualizar
 @controladorAlumnoBP.route('/actualizarAlumno', methods=['PUT'])
 def actualizar():
-    return 'Se actualizo el alumno'
+    try:
+        idReq = request.form.get('txtId').strip()
+        nombreReq = request.form.get('txtNombre').strip()
+        carreraReq = request.form.get('txtCarrera').strip()
+        actualizarEstudiante(nombreReq,carreraReq,idReq)
+        return jsonify({"Actualizar":"Se actualizó correctamente"}),200
+    except Exception as e:
+        return jsonify ({"Exception": str(e)}),500
 
-#Ruta para actualizar
+#Ruta para eliminar
 @controladorAlumnoBP.route('/eliminarAlumno', methods=['DELETE'])
 def eliminar():
-    return 'Se borro el alumno'
-
+    idReq = request.form.get('txtId').strip()
+    try:
+        softDeleteEstudiante(idReq)
+        return jsonify({"Eliminado":" Eliminado exitosamente"}),200
+    except Exception as e:
+        return jsonify({"Error": str(e)}),500
+    

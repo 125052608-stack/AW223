@@ -55,3 +55,12 @@ def eliminar():
     except Exception as e:
         return jsonify({"Error": str(e)}),500
     
+#Ruta para consultar uno
+@controladorAlumnoBP.route('/consultarUno')
+def consultarUno():
+    try:
+        idReq = request.form.get('txtId').strip()
+        datos = consultarUnEstudiante(idReq)
+        return jsonify({"Consultado":datos}),200
+    except Exception as e:
+            return jsonify({"Error": str(e)}),500

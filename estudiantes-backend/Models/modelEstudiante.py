@@ -34,3 +34,12 @@ def actualizarEstudiante(nombre,carrera,id):
     mysql.connection.commit()
     #close: cerrar consulta
     cursor.close()           
+
+# funcion consultar po id
+def consultarUnEstudiante(id):
+    cursor= mysql.connection.cursor()
+    cursor.execute("SELECT * FROM tb_alumnos WHERE id=%s and state=1",(id))
+    consulta = cursor.fetchall()
+    #close: cerrar consulta
+    cursor.close()
+    return consulta
